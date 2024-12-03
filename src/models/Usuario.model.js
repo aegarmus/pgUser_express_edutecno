@@ -31,4 +31,35 @@ export class Usuario {
             throw new Error(`Error al crear el usuario ${error}`)
         }
     }
+
+    static async findAllActive() {
+        try {
+            const findQuery = `SELECT * FROM usuarios WHERE active = $1`;
+            const value = [true]
+
+            const { rows } = await query(findQuery, value)
+            return rows
+        } catch (error) {
+            console.error(`Èrror al buscar un usuario. ERROR: ${error.message}`)
+            throw new Error(`Error al buscar un usuario ${error}`)
+        }
+    }
+
+    static async findActiveById(id) {
+        try {
+            const findQuery = `SELECT * FROM usuarios WHERE id = $1 AND active = $2`
+            const value = [id, true]
+
+            const { rows } = await query(findQuery, value)
+            console.log(rows)
+            
+            /* rows.length > 0 ? rows[0] : null */
+            if(rows.length === 0 ) throw new Error('No pudimos encontrar el ID')
+
+            return rows[0]
+        } catch(error) {
+            console.error(`Error al buscar un usuario por id. ERROR: ${error.message}`)
+            throw new Error(`Error al buscar un usuario por id ${error}`)
+        }
+    }
 }
