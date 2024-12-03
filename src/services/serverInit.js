@@ -5,8 +5,8 @@ import { checkDbConnection } from "../utils/chekDbConecction.js";
 export const serverInit = async (app, port) => {
     try {
         console.log('Verificando conexión a la base de datos');
-        await checkDbConnection();
-        console.log('Conexión éxitosa con PostgreSQL');
+        const { now } = await checkDbConnection();
+        console.log(`Conexión éxitosa con PostgreSQL realizada el ${now}`);
 
         app.listen(port, () => {
             console.log(`Servidor corriendo en el puerto: ${port}`)
