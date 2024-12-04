@@ -83,13 +83,40 @@ export class Usuario {
 
             const { rows } = await query(updateQuery, values)
 
-            if (rows.length === 0)
-              throw new Error("No pudimos encontrar el ID");
+            if (rows.length === 0) throw new Error("No pudimos encontrar el ID");
 
             return rows[0]
         } catch (error) {
             console.error(`Error al actualizar un usuario por id. ERROR: ${error.message}`);
             throw new Error(`Error al actualizar un usuario por id ${error}`);
+        }
+    }
+
+    static async permaDelete(id) {
+        try {
+            const deleteQuery = `DELETE FROM usuarios WHERE id = $1 AND active = true`;
+            const value = [id]
+
+            await query(deleteQuery, value)
+
+        } catch (error) {
+            console.error(`Error al eliminar un usuario por id. ERROR: ${error.message}`);
+            throw new Error(`Error al eliminar un usuario por id ${error}`);      
+        }
+    }
+
+    static async softDelete(id) {
+        try {
+            const softDeleteQuery = 'UPDATE usuarios SET active = false WHERE id = $1 AND active = true RETURNING *'
+            const value = [id]
+
+            const { rows } = await query(softDeleteQuery, value)
+            if (rows.length === 0) throw new Error("No pudimos encontrar el ID");
+
+            return rows[0]
+        } catch (error) {
+            console.error(`Error al eliminar un usuario por id. ERROR: ${error.message}`);
+            throw new Error(`Error al eliminar un usuario por id ${error}`);
         }
     }
 }
