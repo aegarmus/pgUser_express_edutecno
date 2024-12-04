@@ -51,7 +51,6 @@ export class Usuario {
             const value = [id, true]
 
             const { rows } = await query(findQuery, value)
-            console.log(rows)
             
             /* rows.length > 0 ? rows[0] : null */
             if(rows.length === 0 ) throw new Error('No pudimos encontrar el ID')
@@ -60,6 +59,37 @@ export class Usuario {
         } catch(error) {
             console.error(`Error al buscar un usuario por id. ERROR: ${error.message}`)
             throw new Error(`Error al buscar un usuario por id ${error}`)
+        }
+    }
+
+    static async update(id, data) {
+        try {
+            const { name, lastname, email, phone, birthday, budget } = data;
+
+            const updateQuery = `
+                UPDATE usuarios 
+                SET 
+                    name = $1, 
+                    lastname = $2, 
+                    email = $3, 
+                    phone = $4, 
+                    birthday = $5, 
+                    budget = $6
+                WHERE id = $7 AND active = true
+                RETURNING *;
+            `
+
+            const values = [name, lastname, email, phone, birthday, budget, id]
+
+            const { rows } = await query(updateQuery, values)
+
+            if (rows.length === 0)
+              throw new Error("No pudimos encontrar el ID");
+
+            return rows[0]
+        } catch (error) {
+            console.error(`Error al actualizar un usuario por id. ERROR: ${error.message}`);
+            throw new Error(`Error al actualizar un usuario por id ${error}`);
         }
     }
 }

@@ -54,3 +54,24 @@ export const findById = async(req, res) => {
          });
     }
 }
+
+export const updateById = async(req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+
+        const userUpdated = await Usuario.update(id, data)
+
+        res.status(200).json({
+            message: 'Usuario actualizado con éxito',
+            status: 200,
+            data: userUpdated
+        })
+    } catch (error) {
+        res.status(500).json({
+          message: "Error al actualizar al usuarios",
+          status: 500,
+          error,
+        });
+    }
+}
